@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
+using Autofac;
+using Autofac.Configuration;
+using Autofac.Extensions.DependencyInjection;
+using MedPoint.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,11 +25,31 @@ namespace MedPoint
         }
 
         public IConfiguration Configuration { get; }
+        public IContainer Container { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddDbContext<MedPointDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            return ConfigureAutofac(services);
+        }
+
+        private IServiceProvider ConfigureAutofac(IServiceCollection services)
+        {
+            var module = new ConfigurationModule(Configuration);
+            var builder = new ContainerBuilder();
+            var dataAccess = Assembly.GetExecutingAssembly();
+
+            builder.RegisterModule(module);
+            builder.RegisterInstance(Configuration).As<IConfiguration>().SingleInstance();
+            builder.Populate(services);
+
+            builder.RegisterAssemblyTypes(dataAccess)
+                .Where(t => t.Namespace.StartsWith("MedPoint"))
+                .AsImplementedInterfaces();
+
+            return builder.Build().Resolve<IServiceProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
