@@ -6,6 +6,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Configuration;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using MedPoint.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,6 +45,15 @@ namespace MedPoint
             builder.RegisterModule(module);
             builder.RegisterInstance(Configuration).As<IConfiguration>().SingleInstance();
             builder.Populate(services);
+
+            builder.Register(c => new MapperConfiguration(x => x.AddProfile(new DtoMapperProfile())))
+                .SingleInstance()
+                .AutoActivate()
+                .AsSelf();
+
+            builder.Register(c => c.Resolve<MapperConfiguration>().CreateMapper(c.Resolve))
+                .As<IMapper>()
+                .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(dataAccess)
                 .Where(t => t.Namespace.StartsWith("MedPoint"))

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MedPoint.Data.Entities
 {
-    public class User : IdentityUser<Guid>
+    public class User : IdentityUser<Guid>, IEntity
     {
     }
 }
