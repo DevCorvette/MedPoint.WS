@@ -15,5 +15,7 @@ namespace MedPoint.Data
         {
             this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
+
+        public virtual DbSet<TestObject> TestObjects { get; set; }
     }
 }

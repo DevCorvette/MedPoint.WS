@@ -26,6 +26,7 @@ namespace MedPoint.Data
             });
 
             CreateMap<UserDto, User>();
+            CreateMap<TestObjectDto, TestObject>();
         }
     }
 }
