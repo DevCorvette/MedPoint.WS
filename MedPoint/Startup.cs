@@ -33,6 +33,8 @@ namespace MedPoint
         {
             services.AddMvc();
             services.AddDbContext<MedPointDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.Configure<AppSettings>(Configuration);
+
             return ConfigureAutofac(services);
         }
 
