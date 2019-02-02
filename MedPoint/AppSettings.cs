@@ -9,6 +9,7 @@ namespace MedPoint
     {
         public ResourcePaths ResourcePaths { get; set; }
         public Urls Urls { get; set; }
+        public EmailSettings EmailSettings { get; set; }
     }
 
     public class ResourcePaths
@@ -20,5 +21,14 @@ namespace MedPoint
     public class Urls
     {
         public string Images { get; set; }
+    }
+
+    public class EmailSettings
+    {
+        public string SMTPServer { get; set; }
+        public string SMTPUserName { get; set; }
+        public string SMPTPassword { get; set; }
+        public string DisplayName { get; set; }
+        public int SMPTPort { get; set; }
     }
 }
