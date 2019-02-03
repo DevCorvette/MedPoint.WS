@@ -23,5 +23,14 @@ namespace MedPoint.Exceptions
         public EntityNotFoundException(string message, Exception inner) : base(message, inner) { }
         protected EntityNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
+
+    [Serializable]
+    public class UserNotFoundException : MedPointException
+    {
+        public UserNotFoundException() : base("User not found") { }
+        public UserNotFoundException(string message) : base(message) { }
+        public UserNotFoundException(string message, Exception inner) : base(message, inner) { }
+        protected UserNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
     
 }

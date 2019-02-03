@@ -8,8 +8,11 @@ using Autofac.Configuration;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using MedPoint.Data;
+using MedPoint.Data.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +36,20 @@ namespace MedPoint
         {
             services.AddMvc();
             services.AddDbContext<MedPointDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<User, Role>(options =>
+                {
+                    options.Password = new PasswordOptions()
+                    {
+                        RequiredLength = 6,
+                        RequireLowercase = false,
+                        RequireUppercase = false,
+                        RequireNonAlphanumeric = false,
+                        RequireDigit = false,
+                    };
+                })
+                .AddEntityFrameworkStores<IdentityDbContext<User, IdentityRole<Guid>, Guid>>()
+                .AddDefaultTokenProviders();
+
             services.Configure<AppSettings>(Configuration);
 
             return ConfigureAutofac(services);
@@ -61,6 +78,10 @@ namespace MedPoint
                 .Where(t => t.Namespace.StartsWith("MedPoint"))
                 .AsImplementedInterfaces();
 
+            builder.RegisterType<IdentityOptions>();
+            builder.RegisterType<UserManager<User>>();
+            builder.RegisterType<UserStore<User, Role, MedPointDbContext, Guid>>().As<IUserStore<User>>();
+
             return builder.Build().Resolve<IServiceProvider>();
         }
 
@@ -71,6 +92,8 @@ namespace MedPoint
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseAuthentication();
 
             app.UseMvc();
         }
