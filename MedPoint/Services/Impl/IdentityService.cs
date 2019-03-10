@@ -55,5 +55,46 @@ namespace MedPoint.Services.Impl
             return Map(user);
         }
 
+        public async Task<string> RegisterByEmail(RegisterByEmailRequest request)
+        {
+            var email = request.Email.ToLower();
+            try
+            {
+                await GetUserByEmail(email);
+                throw new UserIsAlreadyExistException();
+            }
+            catch (UserNotFoundException) { }
+
+            var userDto = new UserDto()
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                UserName = email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Gender = request.Gender,
+                Birthday = request.Birthday,
+                RegistrationDate = DateTime.UtcNow,
+            };
+            var user = Map(userDto);
+
+            var result = await UserManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+            {
+                var message = result.Errors.FirstOrDefault()?.Description;
+                throw new IdentityServiceException(message);
+            }
+
+            var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+            return token;
+        }
+
+        public async Task<string> ConfirmEmail(string email, string token)
+        {
+            var user = await GetUserByEmail(email);
+            var result = await UserManager.ConfirmEmailAsync(Map(user), token);
+
+            return result.Succeeded ? AppSettings.Urls.ConfirmSuccess : AppSettings.Urls.ConfirmFailure;
+        }
     }
 }

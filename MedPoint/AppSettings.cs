@@ -21,6 +21,8 @@ namespace MedPoint
     public class Urls
     {
         public string Images { get; set; }
+        public string ConfirmSuccess { get; set; }
+        public string ConfirmFailure { get; set; }
     }
 
     public class EmailSettings
