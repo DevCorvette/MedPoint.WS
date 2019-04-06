@@ -12,9 +12,10 @@ using System;
 namespace MedPoint.Data.Migrations
 {
     [DbContext(typeof(MedPointDbContext))]
-    partial class MedPointDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190204155539_User_RegistrationFields")]
+    partial class User_RegistrationFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

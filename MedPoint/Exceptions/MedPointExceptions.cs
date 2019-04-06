@@ -23,5 +23,32 @@ namespace MedPoint.Exceptions
         public EntityNotFoundException(string message, Exception inner) : base(message, inner) { }
         protected EntityNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-    
+
+    [Serializable]
+    public class UserNotFoundException : MedPointException
+    {
+        public UserNotFoundException() : base("User not found") { }
+        public UserNotFoundException(string message) : base(message) { }
+        public UserNotFoundException(string message, Exception inner) : base(message, inner) { }
+        protected UserNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
+
+    [Serializable]
+    public class UserIsAlreadyExistException : MedPointException
+    {
+        public UserIsAlreadyExistException() : base("User is already exist") { }
+        public UserIsAlreadyExistException(string message) : base(message) { }
+        public UserIsAlreadyExistException(string message, Exception inner) : base(message, inner) { }
+        protected UserIsAlreadyExistException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
+
+    [Serializable]
+    public class IdentityServiceException : Exception
+    {
+        public IdentityServiceException() { }
+        public IdentityServiceException(string message) : base(message) { }
+        public IdentityServiceException(string message, Exception inner) : base(message, inner) { }
+        protected IdentityServiceException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    }
+
 }
